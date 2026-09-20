@@ -79,7 +79,7 @@ LABEL_STYLE = "font-family: TypeWriter;font-size: 10.0;font-weight: bold;fill: #
 LABEL_X_FALLBACK_SLOPE = -4.2027
 LABEL_X_FALLBACK_INTERCEPT = 27.5495
 
-GNS3_CLI_VERSION = "1.0"
+GNS3_CLI_VERSION = "2.0"
 GNS3_CLI_URL = "https://github.com/Raizo62/gns3-cli"
 
 def _visible_length(text: str) -> int:
