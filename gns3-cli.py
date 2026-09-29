@@ -2130,32 +2130,32 @@ class Gns3CLI:
         """
 
         if self.server is None:
-            return 1, "gns3fy is not installed"
+            return 2, "gns3fy is not installed"
 
         if not project_name:
-            return 2, "A project name is required"
+            return 3, "A project name is required"
 
         if not device_name:
-            return 3, "A device name is required"
+            return 4, "A device name is required"
 
         lab, error = self._load_open_project(project_name, "checking device status")
         if error is not None:
-            return 4, error
+            return 5, error
 
         try:
             node = lab.get_node(device_name)
             if node is None:
-                return 5, f"Device '{device_name}' not found in project '{project_name}'."
+                return 6, f"Device '{device_name}' not found in project '{project_name}'."
 
             status = (node.status or "").lower()
 
             if status in {"started", "running"}:
                 return 0, "running"
 
-            return 0, "not running"
+            return 1, "not_running"
 
         except Exception as exc:
-            return 5, (self._format_gns3_error(exc, "check the device status") + "\n")
+            return 7, (self._format_gns3_error(exc, "check the device status") + "\n")
 
     def device_exec_cmd(
         self,
