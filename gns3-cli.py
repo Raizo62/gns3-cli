@@ -1139,6 +1139,13 @@ class Gns3CLI:
             raise SystemExit(1)
 
     def projects(self, status: Literal["opened", "closed"] | None = None) -> tuple[int, str | None]:
+        """List project names, optionally filtered by status.
+
+         Usage:
+             gns3-cli projects
+             gns3-cli projects --status=opened
+             gns3-cli projects --status=closed
+        """
         if self.server is None:
             return 1, "gns3fy is not installed"
 
