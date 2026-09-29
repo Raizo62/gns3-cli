@@ -1819,12 +1819,14 @@ class Gns3CLI:
 
         return 0, f"Node '{device_name}' has been added to project '{project_name}' from template '{template_name}'."
 
-    def device_del(self, project_name: str, device_name: str) -> tuple[int, str | None] :
+    def device_del(
+        self, project_name: str, device_name: str, confirme: bool = False
+    ) -> tuple[int, str | None] :
         """
         Delete a device from a GNS3 project.
 
         Usage:
-            gns3-cli device_del untitled R1
+            gns3-cli device_del untitled R1 --confirme=true
         """
         if self.server is None:
             return 1, "gns3fy is not installed"
@@ -1835,16 +1837,19 @@ class Gns3CLI:
         if not device_name:
             return 3, "A device name is required"
 
+        if not confirme:
+            return 4, "'--confirme=true' is required to delete."
+
         # Load project (must be opened)
         lab, error = self._load_open_project(project_name, "deleting a device")
         if error is not None:
-            return 4, error
+            return 5, error
 
         try:
             # Find the device
             device = lab.get_node(device_name)
             if device is None:
-                return 5, f"Error: Device '{device_name}' not found in project '{project_name}'."
+                return 6, f"Error: Device '{device_name}' not found in project '{project_name}'."
 
             # Delete the device
             device.delete()
@@ -1852,7 +1857,7 @@ class Gns3CLI:
             return 0, f"Device '{device_name}' has been deleted from project '{project_name}'."
 
         except Exception as exc:
-            return 6, self._format_gns3_error(exc, "delete the device")
+            return 7, self._format_gns3_error(exc, "delete the device")
 
     def device_interfaces(self, project_name: str, device_name: str) -> tuple[int, str | None]:
         """Return the list of interface names (eth0, eth1, ...) for a device."""
@@ -4357,6 +4362,7 @@ _ARGUMENT_HELP_OVERRIDES: dict[str, str] = {
 _COMMAND_ARGUMENT_HELP_OVERRIDES: dict[tuple[str, str], str] = {
     ("project_delete", "confirme"): "Confirm deletion of this project",
     ("template_delete", "confirme"): "Confirm deletion of this template",
+    ("device_del", "confirme"): "Confirm deletion of this device",
     ("projects", "status"): "Only list projects in this state",
     ("devices", "status"): "Only list devices with this runtime status",
     ("template_attributes", "attribute"): (
