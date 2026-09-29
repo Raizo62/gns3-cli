@@ -1819,14 +1819,14 @@ class Gns3CLI:
 
         return 0, f"Node '{device_name}' has been added to project '{project_name}' from template '{template_name}'."
 
-    def device_del(
+    def device_delete(
         self, project_name: str, device_name: str, confirme: bool = False
     ) -> tuple[int, str | None] :
         """
         Delete a device from a GNS3 project.
 
         Usage:
-            gns3-cli device_del untitled R1 --confirme=true
+            gns3-cli device_delete untitled R1 --confirme=true
         """
         if self.server is None:
             return 1, "gns3fy is not installed"
@@ -4367,7 +4367,7 @@ _ARGUMENT_HELP_OVERRIDES: dict[str, str] = {
 _COMMAND_ARGUMENT_HELP_OVERRIDES: dict[tuple[str, str], str] = {
     ("project_delete", "confirme"): "Confirm deletion of this project",
     ("template_delete", "confirme"): "Confirm deletion of this template",
-    ("device_del", "confirme"): "Confirm deletion of this device",
+    ("device_delete", "confirme"): "Confirm deletion of this device",
     ("qemu_reset_disk", "confirme"): "Confirm resetting this QEMU device's disk(s)",
     ("projects", "status"): "Only list projects in this state",
     ("devices", "status"): "Only list devices with this runtime status",

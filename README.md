@@ -135,7 +135,7 @@ This is the full list of commands, as reported by `./gns3-cli.py --help`:
 - `devices_connect` : Create a link between 2 devices in a project using their port names.
 - `devices_disconnect` : Remove the link between 2 devices in a project using their port names.
 - `device_add` : Add a device to a project from an existing template.
-- `device_del` : Delete a device from a GNS3 project.
+- `device_delete` : Delete a device from a GNS3 project.
 - `device_interfaces` : Return the list of interface names (eth0, eth1, ...) for a device.
 - `device_connections` : Return all interfaces of a device and what they are connected to.
 - `device_attributes` : Display all available JSON information for a project's device, or only the value of one attribute.
