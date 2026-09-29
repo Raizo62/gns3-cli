@@ -3580,15 +3580,20 @@ class Gns3CLI:
 
         return backing_format
 
-    def qemu_reset_disk(self, project_name: str, device_name: str) -> tuple[int, str | None] :
+    def qemu_reset_disk(
+        self, project_name: str, device_name: str, confirme: bool = False
+    ) -> tuple[int, str | None] :
         """
         Reset a stopped QEMU VM's disk(s) to their original base image (linked clone).
 
         Usage:
-            gns3-cli qemu_reset_disk untitled Debian-1
+            gns3-cli qemu_reset_disk untitled Debian-1 --confirme=true
         """
         if not project_name or not device_name:
             return 1, "Usage: qemu_reset_disk <project_name> <device_name>"
+
+        if not confirme:
+            return 2, "'--confirme=true' is required to reset the disk(s)."
 
         device, error = self._get_device(
             project_name,
@@ -3597,21 +3602,21 @@ class Gns3CLI:
             require_started=False,
         )
         if error:
-            return 2, error
+            return 3, error
 
         status = (getattr(device, "status", "") or "").strip().lower()
         if status != "stopped":
-            return 3, (
+            return 4, (
                 f"Error: Device {device_name} must be stopped before resetting its disk(s) "
                 f"(Status: {getattr(device, 'status', 'unknown')})."
             )
 
         device_directory = getattr(device, "node_directory", None)
         if not device_directory:
-            return 4, f"Error: Device {device_name} has no node_directory."
+            return 5, f"Error: Device {device_name} has no node_directory."
 
         if shutil.which("qemu-img") is None:
-            return 5, "Error: 'qemu-img' binary not found in PATH."
+            return 6, "Error: 'qemu-img' binary not found in PATH."
 
         properties = getattr(device, "properties", None)
         if not isinstance(properties, dict):
@@ -3660,7 +3665,7 @@ class Gns3CLI:
                 return result.returncode, f"Error: 'qemu-img create' failed for hd{letter} (exit code {result.returncode})."
 
         if reset_count == 0:
-            return 6, f"Error: This VM {device_name} has no linked disk."
+            return 7, f"Error: This VM {device_name} has no linked disk."
 
         return 0, f"Node '{device_name}' disk(s) have been reset ({reset_count} disk(s))."
 
@@ -4363,6 +4368,7 @@ _COMMAND_ARGUMENT_HELP_OVERRIDES: dict[tuple[str, str], str] = {
     ("project_delete", "confirme"): "Confirm deletion of this project",
     ("template_delete", "confirme"): "Confirm deletion of this template",
     ("device_del", "confirme"): "Confirm deletion of this device",
+    ("qemu_reset_disk", "confirme"): "Confirm resetting this QEMU device's disk(s)",
     ("projects", "status"): "Only list projects in this state",
     ("devices", "status"): "Only list devices with this runtime status",
     ("template_attributes", "attribute"): (
