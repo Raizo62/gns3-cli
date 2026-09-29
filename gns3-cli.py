@@ -1420,11 +1420,13 @@ class Gns3CLI:
         except Exception as exc:
             return 6, f"Error while cloning template: {exc}"
 
-    def template_delete(self, template_name: str) -> tuple[int, str | None]:
+    def template_delete(
+        self, template_name: str, confirme: bool = False
+    ) -> tuple[int, str | None]:
         """Delete a GNS3 template.
 
         Usage:
-            gns3-cli template_delete newtemplate
+            gns3-cli template_delete newtemplate --confirme=true
         """
 
         if self.server is None:
@@ -1432,6 +1434,9 @@ class Gns3CLI:
 
         if not template_name:
             return 2, "Usage: template_delete <template_name>"
+
+        if not confirme:
+            return 4, "'--confirme=true' is required to delete."
 
         try:
             # Retrieve the template by name
@@ -4283,7 +4288,6 @@ _ARGUMENT_METAVAR_OVERRIDES: dict[str, str] = {
 # meaning is the same in every command that exposes them.
 _ARGUMENT_HELP_OVERRIDES: dict[str, str] = {
     "attribute": "Only display the value of this attribute instead of the full JSON (for example: node_type)",
-    "confirme": "Confirme to delete this project",
     "startall": "Starts all the project's devices.",
     "device_type": "Only list devices of this GNS3 node type (for example: dynamips, qemu, vpcs, docker, iou)",
     "custom_path": "Override default project directory path (for example: /home/user/my_projects)",
@@ -4351,6 +4355,8 @@ _ARGUMENT_HELP_OVERRIDES: dict[str, str] = {
 # (command_name, parameter_name) and take priority over
 # _ARGUMENT_HELP_OVERRIDES.
 _COMMAND_ARGUMENT_HELP_OVERRIDES: dict[tuple[str, str], str] = {
+    ("project_delete", "confirme"): "Confirm deletion of this project",
+    ("template_delete", "confirme"): "Confirm deletion of this template",
     ("projects", "status"): "Only list projects in this state",
     ("devices", "status"): "Only list devices with this runtime status",
     ("template_attributes", "attribute"): (
