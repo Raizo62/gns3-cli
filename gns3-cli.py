@@ -688,6 +688,26 @@ class Gns3CLI:
                 if not key.startswith("__")
                 if value is not None
             }
+            # The GUI labels link ends with the port short_name (e0/0), gns3fy uses the full name.
+            for endpoint in data.get("nodes") or []:
+                try:
+                    node_url = (
+                        f"{link_self.connector.base_url}/projects/"
+                        f"{link_self.project_id}/nodes/{endpoint['node_id']}"
+                    )
+                    node_data = link_self.connector.http_call("get", node_url).json()
+                    for port in node_data.get("ports", []):
+                        if (
+                            port.get("adapter_number") == endpoint.get("adapter_number")
+                            and port.get("port_number") == endpoint.get("port_number")
+                            and port.get("short_name")
+                        ):
+                            label = dict(endpoint.get("label") or {})
+                            label["text"] = port["short_name"]
+                            endpoint["label"] = label
+                            break
+                except Exception:
+                    pass  # keep gns3fy's default label
             _response = link_self.connector.http_call("post", _url, json_data=data)
             link_self._update(_response.json())
 
