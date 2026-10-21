@@ -1352,12 +1352,12 @@ class Gns3CLI:
 
         return 0, f"Project '{project_name}' created (interface labels: {show_interface_labels})."
 
-    def project_delete(self, project_name: str, confirme: bool = False) -> tuple[int, str | None] :
+    def project_delete(self, project_name: str, confirm: bool = False) -> tuple[int, str | None] :
         """
         Delete a GNS3 project.
 
         Usage:
-            gns3-cli project_delete untitled --confirme=true
+            gns3-cli project_delete untitled --confirm=true
         """
         if self.server is None:
             return 1, "gns3fy is not installed"
@@ -1366,9 +1366,9 @@ class Gns3CLI:
             return 2, "A project name is required"
 
         # Require confirmation
-        if not confirme:
+        if not confirm:
             return 3, (
-                "'--confirme=true' is required to delete."
+                "'--confirm=true' is required to delete."
             )
 
         # Load project (opened or closed)
@@ -1441,12 +1441,12 @@ class Gns3CLI:
             return 6, f"Error while cloning template: {exc}"
 
     def template_delete(
-        self, template_name: str, confirme: bool = False
+        self, template_name: str, confirm: bool = False
     ) -> tuple[int, str | None]:
         """Delete a GNS3 template.
 
         Usage:
-            gns3-cli template_delete newtemplate --confirme=true
+            gns3-cli template_delete newtemplate --confirm=true
         """
 
         if self.server is None:
@@ -1455,8 +1455,8 @@ class Gns3CLI:
         if not template_name:
             return 2, "Usage: template_delete <template_name>"
 
-        if not confirme:
-            return 4, "'--confirme=true' is required to delete."
+        if not confirm:
+            return 4, "'--confirm=true' is required to delete."
 
         try:
             # Retrieve the template by name
@@ -1840,13 +1840,13 @@ class Gns3CLI:
         return 0, f"Node '{device_name}' has been added to project '{project_name}' from template '{template_name}'."
 
     def device_delete(
-        self, project_name: str, device_name: str, confirme: bool = False
+        self, project_name: str, device_name: str, confirm: bool = False
     ) -> tuple[int, str | None] :
         """
         Delete a device from a GNS3 project.
 
         Usage:
-            gns3-cli device_delete untitled R1 --confirme=true
+            gns3-cli device_delete untitled R1 --confirm=true
         """
         if self.server is None:
             return 1, "gns3fy is not installed"
@@ -1857,8 +1857,8 @@ class Gns3CLI:
         if not device_name:
             return 3, "A device name is required"
 
-        if not confirme:
-            return 4, "'--confirme=true' is required to delete."
+        if not confirm:
+            return 4, "'--confirm=true' is required to delete."
 
         # Load project (must be opened)
         lab, error = self._load_open_project(project_name, "deleting a device")
@@ -3601,19 +3601,19 @@ class Gns3CLI:
         return backing_format
 
     def qemu_reset_disk(
-        self, project_name: str, device_name: str, confirme: bool = False
+        self, project_name: str, device_name: str, confirm: bool = False
     ) -> tuple[int, str | None] :
         """
         Reset a stopped QEMU VM's disk(s) to their original base image (linked clone).
 
         Usage:
-            gns3-cli qemu_reset_disk untitled Debian-1 --confirme=true
+            gns3-cli qemu_reset_disk untitled Debian-1 --confirm=true
         """
         if not project_name or not device_name:
             return 1, "Usage: qemu_reset_disk <project_name> <device_name>"
 
-        if not confirme:
-            return 2, "'--confirme=true' is required to reset the disk(s)."
+        if not confirm:
+            return 2, "'--confirm=true' is required to reset the disk(s)."
 
         device, error = self._get_device(
             project_name,
@@ -4385,10 +4385,10 @@ _ARGUMENT_HELP_OVERRIDES: dict[str, str] = {
 # (command_name, parameter_name) and take priority over
 # _ARGUMENT_HELP_OVERRIDES.
 _COMMAND_ARGUMENT_HELP_OVERRIDES: dict[tuple[str, str], str] = {
-    ("project_delete", "confirme"): "Confirm deletion of this project",
-    ("template_delete", "confirme"): "Confirm deletion of this template",
-    ("device_delete", "confirme"): "Confirm deletion of this device",
-    ("qemu_reset_disk", "confirme"): "Confirm resetting this QEMU device's disk(s)",
+    ("project_delete", "confirm"): "Confirm deletion of this project",
+    ("template_delete", "confirm"): "Confirm deletion of this template",
+    ("device_delete", "confirm"): "Confirm deletion of this device",
+    ("qemu_reset_disk", "confirm"): "Confirm resetting this QEMU device's disk(s)",
     ("projects", "status"): "Only list projects in this state",
     ("devices", "status"): "Only list devices with this runtime status",
     ("template_attributes", "attribute"): (
